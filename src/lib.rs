@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 
 pub fn day1_part1(sequence: impl Iterator<Item = i32>) -> i32 {
-    return sequence.sum();
+    sequence.sum()
 }
 
 struct Device {
@@ -34,9 +34,8 @@ pub fn day1_part2(sequence: impl Iterator<Item = i32>) -> i32 {
     let mut device = Device::new();
     let sequence = sequence.collect::<Vec<i32>>();
     loop {
-        match device.calibrate(sequence.iter()) {
-            Some(f) => return f,
-            None => {}
+        if let Some(f) = device.calibrate(sequence.iter()) {
+            return f;
         }
     }
 }
@@ -94,8 +93,7 @@ mod tests {
         let sequence = reader
             .lines()
             .map(|l| l.unwrap())
-            .map(|l| l.parse::<i32>().unwrap())
-            .collect::<Vec<i32>>();
-        assert_eq!(day1_part2(sequence.iter().cloned()), 73364);
+            .map(|l| l.parse::<i32>().unwrap());
+        assert_eq!(day1_part2(sequence), 73364);
     }
 }
