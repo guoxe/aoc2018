@@ -1,5 +1,6 @@
 use std::collections::HashSet;
 
+// ------- DAY 1
 pub fn day1_part1(sequence: impl Iterator<Item = i32>) -> i32 {
     sequence.sum()
 }
@@ -38,6 +39,39 @@ pub fn day1_part2(sequence: impl Iterator<Item = i32>) -> i32 {
             return f;
         }
     }
+}
+// ------- DAY 2
+
+fn process_line(line: &str) -> (bool, bool) {
+    let mut result = (false, false);
+    const NUM_CHARACTERS: u8 = 26;
+    let mut character_count: Vec<u8> = vec![0; NUM_CHARACTERS as usize];
+    for c in line.to_lowercase().chars() {
+        if c.is_ascii_lowercase() {
+            let c = c as u8 % NUM_CHARACTERS;
+            character_count[c as usize] += 1;
+        }
+    }
+    let mut any_two = character_count.iter().filter(|x| **x == 2);
+    if any_two.next().is_some() {
+        result.0 = true;
+    }
+    let mut any_three = character_count.iter().filter(|x| **x == 3);
+    if any_three.next().is_some() {
+        result.1 = true;
+    }
+    result
+}
+
+pub fn day2_part1(lines: impl Iterator<Item = String>) -> i32 {
+    let mut num_two: i32 = 0;
+    let mut num_three: i32 = 0;
+    for line in lines {
+        let (has_two, has_three) = process_line(&line);
+        num_two += has_two as i32;
+        num_three += has_three as i32;
+    }
+    num_two * num_three
 }
 
 #[cfg(test)]
@@ -95,5 +129,27 @@ mod tests {
             .map(|l| l.unwrap())
             .map(|l| l.parse::<i32>().unwrap());
         assert_eq!(day1_part2(sequence), 73364);
+    }
+
+    #[test]
+    fn day2_part1_small() {
+        let input = vec![
+            "abcdef".to_owned(),
+            "bababc".to_owned(),
+            "abbcde".to_owned(),
+            "abcccd".to_owned(),
+            "aabcdd".to_owned(),
+            "abcdee".to_owned(),
+            "ababab".to_owned(),
+        ];
+        assert_eq!(day2_part1(input.iter().cloned()), 12);
+    }
+
+    #[test]
+    fn day2_part1_actual() {
+        let input = BufReader::new(File::open("input_day2.txt").unwrap())
+            .lines()
+            .map(|l| l.unwrap());
+        assert_eq!(day2_part1(input), 4693);
     }
 }
