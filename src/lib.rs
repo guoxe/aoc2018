@@ -1,4 +1,5 @@
 use std::collections::HashSet;
+use itertools::Itertools;
 
 // ------- DAY 1
 pub fn day1_part1(sequence: impl Iterator<Item = i32>) -> i32 {
@@ -72,6 +73,18 @@ pub fn day2_part1(lines: impl Iterator<Item = String>) -> i32 {
         num_three += has_three as i32;
     }
     num_two * num_three
+}
+
+pub fn day2_part2(lines: impl Iterator<Item = String>) -> Option<String> {
+    for pair in lines.combinations(2) {
+        let probe = &pair[0];
+        let candidate = &pair[1];
+        let result = probe.chars().zip(candidate.chars()).filter(|(a, b)| a == b).map(|(a, _)| a).collect::<String>();
+        if result.len() == probe.len() - 1 {
+            return Some(result)
+        }
+    }
+    None
 }
 
 #[cfg(test)]
@@ -151,5 +164,27 @@ mod tests {
             .lines()
             .map(|l| l.unwrap());
         assert_eq!(day2_part1(input), 4693);
+    }
+
+    #[test]
+    fn day2_part2_small() {
+        let input = vec![
+            "abcde".to_owned(),
+            "fghij".to_owned(),
+            "klmno".to_owned(),
+            "pqrst".to_owned(),
+            "fguij".to_owned(),
+            "axcye".to_owned(),
+            "wvxyz".to_owned(),
+        ];
+        assert_eq!(day2_part2(input.iter().cloned()).unwrap(), "fgij");
+    }
+
+    #[test]
+    fn day2_part2_actual() {
+        let input = BufReader::new(File::open("input_day2.txt").unwrap())
+            .lines()
+            .map(|l| l.unwrap());
+        assert_eq!(day2_part2(input).unwrap(), "pebjqsalrdnckzfihvtxysomg");
     }
 }
