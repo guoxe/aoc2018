@@ -72,7 +72,7 @@ fn part1(input: impl Iterator<Item = String>) -> u16 {
                 .parse::<usize>()
             {
                 awake_at = Some(minute);
-                if let Some(&mut guard) = guards.iter().filter(|g| g.id == guard_id.unwrap()).next()
+                if let Some(guard) = guards.iter_mut().filter(|g| g.id == guard_id.unwrap()).take(1).next()
                 {
                     // process guard here, can assume other fields are set
                     guard.add_sleep(asleep_at.unwrap(), awake_at.unwrap())
